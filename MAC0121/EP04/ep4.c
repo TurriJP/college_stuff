@@ -28,12 +28,34 @@ unsigned espalhador (char* s, int tam) {
    return h;
 }
 
+
+int interpreta (char c)
+{
+    if ((c > 32 && c < 65) || (c>90 && c<97) || c>122) 
+    {
+        return 1;
+    }
+    else if (c<33) return 2;
+    else return 0;
+}
+
 Palavra* vetorDesordenado (FILE* texto) {
     Palavra* vetor;//malloc(50 * sizeof(Palavra*));
-    char* palavra = malloc(10*sizeof(char));
-    while(palavra != "Carlinhos")
+    char* palavra = malloc(29*sizeof(char)); //29 caracteres é o tamanho da maior palavra não-técnica em português
+    char charAtual;
+    while(charAtual != EOF)
     {
-        fgets(palavra, 15, texto);
+        charAtual = fgetc(texto);
+        int interpretacao = interpreta(charAtual);
+        if (interpretacao == 1) {/*Não faça nada*/}
+        else if (interpretacao == 2){
+            //WHITE SPACE
+        }
+
+        }
+        else{
+            //LETRA
+        }
         long hash;
         hash = espalhador(palavra,50);
         /*
@@ -52,7 +74,7 @@ Palavra* vetorDesordenado (FILE* texto) {
 }
 
 int main(int argc, char **argv) {
-    int x = 10;
+
     FILE* texto = fopen("source.txt", "r");    
     //FILE* texto = fopen(argv[1], "r");
     if (texto==NULL)
@@ -62,3 +84,16 @@ int main(int argc, char **argv) {
     //char texto[] = "esse sera o texto teste do teste da coisa";
     Palavra* resultado = vetorDesordenado(texto);
 }
+
+
+/*
+
+    
+    char teste = ' ';
+    if(pontuacao(teste)==2)
+    {
+        printf("Entrei");
+        printf("Garantir");
+    }
+    int x = 10;
+*/
