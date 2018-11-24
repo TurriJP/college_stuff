@@ -60,15 +60,15 @@ Palavra* vetorDesordenado (FILE* texto) {
                 indiceLetra = 0;
                 long hash;
                 hash = espalhador(palavra,tamanho);
-                if (vetor[hash] == NULL)
+                if (vetor[hash].ocorrencias == 0)
                 {
                     //vetor.insere(palavra,hash);
-                    vetor[hash]->palavra = palavra;
-                    vetor[hash]->ocorrencias = 1;
+                    vetor[hash].palavra = palavra;
+                    vetor[hash].ocorrencias = 1;
                 }
                 else
                     //vetor[hash]->ocorrencias+=1;
-                    vetor[hash]->ocorrencias += 1;
+                    vetor[hash].ocorrencias += 1;
             }
         }
         else{
