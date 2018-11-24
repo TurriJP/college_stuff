@@ -21,6 +21,14 @@ long espalhador(char* palavra){
     return(soma%10000000);
 }
 */
+void imprime(Palavra* resultado, int tamanho){
+    for (int i = 0; i < tamanho; i++)
+    {
+    printf("%s",resultado[i].palavra);
+    printf("%d\n",resultado[i].ocorrencias);
+    }
+}
+
 unsigned espalhador (char* s, int tam) {
    unsigned h = 0;
    for (int i = 0; s[i] != '\0'; i++)
@@ -39,9 +47,8 @@ int interpreta (char c)
     else return 0;
 }
 
-Palavra* vetorDesordenado (FILE* texto) {
+Palavra* vetorDesordenado (FILE* texto, int tamanho) {
     
-    int tamanho = 50;
     Palavra* vetor = malloc(50 * sizeof(Palavra));
     char* palavra = malloc(29*sizeof(char)); //29 caracteres é o tamanho da maior palavra não-técnica em português
     char charAtual;
@@ -60,20 +67,26 @@ Palavra* vetorDesordenado (FILE* texto) {
                 indiceLetra = 0;
                 long hash;
                 hash = espalhador(palavra,tamanho);
-                if (vetor[hash].ocorrencias == 0)
+                if (vetor[hash].ocorrencias < 1)
                 {
-                    //vetor.insere(palavra,hash);
-                    vetor[hash].palavra = palavra;
+                    vetor[hash].palavra = malloc(strlen(palavra)*sizeof(char));
+                    strcpy(vetor[hash].palavra,palavra);
                     vetor[hash].ocorrencias = 1;
                 }
-                else
-                    //vetor[hash]->ocorrencias+=1;
-                    vetor[hash].ocorrencias += 1;
+                else 
+                {
+                vetor[hash].ocorrencias += 1;
+                }
+                free(palavra);
             }
         }
         else{
             //LETRA
-            if (estado != 1) estado = 1;
+            if (estado != 1)
+            {
+                estado = 1;
+                palavra = malloc(29*sizeof(char));
+            }
             palavra[indiceLetra] = charAtual;
             indiceLetra++;
         }
@@ -84,7 +97,8 @@ Palavra* vetorDesordenado (FILE* texto) {
 }
 
 int main(int argc, char **argv) {
-
+    
+    int tamanho = 50;
     FILE* texto = fopen("source.txt", "r");    
     //FILE* texto = fopen(argv[1], "r");
     if (texto==NULL)
@@ -92,7 +106,9 @@ int main(int argc, char **argv) {
         printf("erro");
     }
     //char texto[] = "esse sera o texto teste do teste da coisa";
-    Palavra* resultado = vetorDesordenado(texto);
+    Palavra* resultado = vetorDesordenado(texto,tamanho);
+    imprime(resultado, tamanho);
+    int esperar = 1;
 }
 
 
