@@ -40,35 +40,45 @@ int interpreta (char c)
 }
 
 Palavra* vetorDesordenado (FILE* texto) {
-    Palavra* vetor;//malloc(50 * sizeof(Palavra*));
+    
+    int tamanho = 50;
+    Palavra* vetor = malloc(50 * sizeof(Palavra));
     char* palavra = malloc(29*sizeof(char)); //29 caracteres é o tamanho da maior palavra não-técnica em português
     char charAtual;
+    int estado = 0; //0 = esperando letras, 1 = montando palavra
+    int indiceLetra = 0;
+
     while(charAtual != EOF)
     {
         charAtual = fgetc(texto);
         int interpretacao = interpreta(charAtual);
-        if (interpretacao == 1) {/*Não faça nada*/}
-        else if (interpretacao == 2){
-            //WHITE SPACE
-        }
-
+        if (interpretacao != 0) {
+            //PONTUAÇÃO OU WHITESPACE
+            if (estado == 1) {
+                //Terminou a palavra que estava sendo lida
+                estado = 0;
+                indiceLetra = 0;
+                long hash;
+                hash = espalhador(palavra,tamanho);
+                if (vetor[hash] == NULL)
+                {
+                    //vetor.insere(palavra,hash);
+                    vetor[hash]->palavra = palavra;
+                    vetor[hash]->ocorrencias = 1;
+                }
+                else
+                    //vetor[hash]->ocorrencias+=1;
+                    vetor[hash]->ocorrencias += 1;
+            }
         }
         else{
             //LETRA
+            if (estado != 1) estado = 1;
+            palavra[indiceLetra] = charAtual;
+            indiceLetra++;
         }
-        long hash;
-        hash = espalhador(palavra,50);
-        /*
-        if (vetor[hash] == NULL)
-        {
-            //vetor.insere(palavra,hash);
-            vetor[hash]->palavra = palavra;
-            vetor[hash]->ocorrencias = 1;
-        }
-        else
-            //vetor[hash]->ocorrencias+=1;
-            vetor[hash]->ocorrencias += 1;
-        */
+
+
     }
     return(vetor);
 }
