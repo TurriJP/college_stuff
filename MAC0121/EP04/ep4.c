@@ -26,6 +26,7 @@ typedef struct {
     Elo* cabec;
 } Lista;
 
+//FUNÇÕES LISTA
 Lista criaL () {
     Lista tmp;
     tmp.cabec = malloc (sizeof (Elo));
@@ -60,11 +61,10 @@ Lista insereL (Lista l, void* val) {
     return aux;
 }
 
-
 Palavra *buscaPalavra (Lista l, long hash) {
   Lista aux = l;
 
-  //se tah olhando pra cabeca, tem q olhar pro prox
+  //Ir para o próximo se estiver na cabeça
   if (aux.cabec->val == NULL && aux.cabec->next->val != NULL)
     aux.cabec = aux.cabec->next;
 
@@ -79,15 +79,7 @@ Palavra *buscaPalavra (Lista l, long hash) {
   return NULL;
 }
 
-void avaliaEstrutura(char *estrutura)
-{
-    if (estrutura[0] == 86 && estrutura[1] == 68) estruturas[0] = 1;
-    if (estrutura[0] == 86 && estrutura[1] == 79) estruturas[1] = 1;
-    if (estrutura[0] == 76 && estrutura[1] == 68) estruturas[2] = 1;
-    if (estrutura[0] == 76 && estrutura[1] == 79) estruturas[3] = 1;
-    if (estrutura[0] == 65 && estrutura[1] == 66) estruturas[4] = 1;
-}
-
+//FUNÇÕES DE ORDENAÇÃO PARA O VETOR
 int ordenaNum (const void * a, const void * b)
 {
 
@@ -170,6 +162,7 @@ void imprimeLista(Lista* resultado)
   return;
 }
 
+//HASH
 unsigned espalhador (char* s, int tam) {
    unsigned h = 0;
    for (int i = 0; s[i] != '\0'; i++)
@@ -177,6 +170,15 @@ unsigned espalhador (char* s, int tam) {
    return h;
 }
 
+//FUNÇÕES DE PARSE
+void avaliaEstrutura(char *estrutura)
+{
+    if (estrutura[0] == 86 && estrutura[1] == 68) estruturas[0] = 1;
+    if (estrutura[0] == 86 && estrutura[1] == 79) estruturas[1] = 1;
+    if (estrutura[0] == 76 && estrutura[1] == 68) estruturas[2] = 1;
+    if (estrutura[0] == 76 && estrutura[1] == 79) estruturas[3] = 1;
+    if (estrutura[0] == 65 && estrutura[1] == 66) estruturas[4] = 1;
+}
 
 int interpreta (char c)
 {
@@ -193,6 +195,7 @@ int interpreta (char c)
     } 
 }
 
+//CHECAR E INSERIR ELEMENTOS
 void hashVetor(Palavra* vetor, char* palavra, long hash)
 {
     if (vetor[hash].ocorrencias < 1)
@@ -241,6 +244,7 @@ void hashLista(Lista lista, char* palavra, long hash)
     return;
 }
 
+//FUNÇÃO PRINCIPAL
 void* processaTexto (FILE* texto, int tamanho) {
     
     //Preciso criar todas as estruturas e dar free nas irrelevantes
