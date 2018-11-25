@@ -6,23 +6,25 @@
 int estruturas[5] = {0,0,0,0,0};
 char *ordem;
 
-//STRUCTS LISTA LIGADA
-typedef struct elo {
-  struct elo* next;
-  void *val;
-} Elo;
 
-typedef struct {
-    Elo* cabec;
-} Lista;
 
 //STRUCT PRINCIPAL
 typedef struct{
     char* palavra;
     int ocorrencias;
     long indice;
-    Lista colisoes;
+    void* colisoes;
 }Palavra;
+
+//STRUCTS LISTA LIGADA
+typedef struct elo {
+  struct elo* next;
+  Palavra* val;
+} Elo;
+
+typedef struct {
+    Elo* cabec;
+} Lista;
 
 Lista criaL () {
     Lista tmp;
@@ -65,8 +67,8 @@ Palavra *buscaPalavra (Lista l, long hash) {
 
 
   while (aux.cabec != NULL) {
-    long palavraB = (aux.cabec)->val->indice;
-    if (comparaHash (aux.cabec->val, hash) == 1)
+    long palavraB = aux.cabec->val->indice;
+    if (palavraB == hash)
       return aux.cabec->val;
     aux.cabec = aux.cabec->next;
   }
@@ -165,6 +167,7 @@ void hashVetor(Palavra* vetor, char* palavra, long hash)
     }
     else 
     {
+    //Implementar um check aqui pra ver se não há colisões nesse índice
     vetor[hash].ocorrencias += 1;
     }
     free(palavra);
@@ -173,6 +176,21 @@ void hashVetor(Palavra* vetor, char* palavra, long hash)
 void hashLista(Lista lista, char* palavra, long hash)
 {
     Palavra *resultado = buscaPalavra(lista,hash);
+    if (resultado == NULL)
+    {
+        //Palavra ainda não está na lista
+        Palavra* novoElemento;
+        novoElemento->palavra = palavra;
+        novoElemento->ocorrencias = 1;
+        novoElemento->indice = hash;
+        //Fazer aqui um check no caso de ordenação
+        insereL(lista,novoElemento);
+    }
+    else
+    {
+        //Implementar um check aqui pra ver se há colisões nesse hash
+        resultado->ocorrencias += 1;
+    }
 }
 
 Palavra* processaTexto (FILE* texto, int tamanho) {
