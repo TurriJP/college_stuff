@@ -110,34 +110,34 @@ int ordenaAlfa (const void * a, const void * b)
 
 //ORDENAÇÃO PARA LISTA LIGADA
 
-void bubbleSort(Elo **head) 
+void bubbleSort(Elo **cabeca) 
 {
-    int done = 0;         // 1 quando nenhuma troca foi feita numa passagem
+    int trocado = 0;         //1 quando nenhuma troca foi feita numa passagem
 
-    // Não organizar uma lista vazia ou com um único elemento
-    if (*head == NULL || (*head)->next == NULL) return;
+    //Não organizar uma lista vazia ou com um único elemento
+    if (*cabeca == NULL || (*cabeca)->next == NULL) return;
 
-    while (!done) {
-        Elo **pv = head;            // fonte do ponteiro para o nó atual na lista
-        Elo *nd = *head;            // ponteiro de iteração local
-        Elo *nx = (*head)->next;    // ponteiro com o próximo ponteiro
+    while (!trocado) {
+        Elo **apontador = cabeca;            //ponteiro para o nó atual na lista
+        Elo *a = *cabeca;            //ponteiro de iteração local
+        Elo *b = (*cabeca)->next;    //ponteiro com o próximo ponteiro
 
-        done = 1;
+        trocado = 1;
 
-        while (nx) {
+        while (b) {
             int cmp; 
-            if (ordem[0] == 65) cmp = strcmp(nd->val->palavra, nx->val->palavra); //Alfabética
-            if (ordem[0] == 79) cmp = (nx->val->ocorrencias - nd->val->ocorrencias); 
+            if (ordem[0] == 65) cmp = strcmp(a->val->palavra, b->val->palavra); //Alfabética
+            if (ordem[0] == 79) cmp = (b->val->ocorrencias - a->val->ocorrencias); 
             if (cmp > 0) {
-                nd->next = nx->next;
-                nx->next = nd;
-                *pv = nx;
+                a->next = b->next;
+                b->next = a;
+                *apontador = b;
 
-                done = 0;
+                trocado = 0;
             }
-            pv = &nd->next;
-            nd = nx;
-            nx = nx->next;
+            apontador = &a->next;
+            a = b;
+            b = b->next;
         }
     }
 }
