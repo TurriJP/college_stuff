@@ -7,26 +7,32 @@ typedef struct{
     int ocorrencias;
 }Palavra;
 
-/*
-long espalhador(char* palavra){
-    long caractere = 0;
-    long soma = 0;
-    long i = 0; //constante para lidar com palavras que tem as mesmas letras em outra ordem
-    while (caractere != EOF)
-    {
-        caractere = palavra[i];        
-        soma += (caractere + i)*2654435769;
-        i++;
-    }
-    return(soma%10000000);
+int ordenaNum (const void * a, const void * b)
+{
+
+    Palavra *palavraA = (Palavra *)a;
+    Palavra *palavraB = (Palavra *)b;
+
+    return ( palavraB->ocorrencias - palavraA->ocorrencias );
 }
-*/
+
+int ordenaAlfa (const void * a, const void * b)
+{
+
+    Palavra *palavraA = (Palavra *)a;
+    Palavra *palavraB = (Palavra *)b;
+    if (palavraA->palavra == NULL) return 1;
+    if (palavraB->palavra == NULL) return -1;
+
+    return strcmp( palavraA->palavra, palavraB->palavra );
+}
+
 void imprime(Palavra* resultado, int tamanho){
     for (int i = 0; i < tamanho; i++)
     {
         if (resultado[i].palavra != NULL)
         {
-            printf("%s",resultado[i].palavra);
+            printf("%s ",resultado[i].palavra);
             printf("%d\n",resultado[i].ocorrencias);
         }
     }
@@ -121,21 +127,9 @@ int main(int argc, char **argv) {
     {
         printf("erro");
     }
-    //char texto[] = "esse sera o texto teste do teste da coisa";
     Palavra* resultado = vetorDesordenado(texto,tamanho);
+    qsort(resultado, tamanho, sizeof(Palavra), ordenaAlfa);
     imprime(resultado, tamanho);
     int esperar = 1;
 }
 
-
-/*
-
-    
-    char teste = ' ';
-    if(pontuacao(teste)==2)
-    {
-        printf("Entrei");
-        printf("Garantir");
-    }
-    int x = 10;
-*/
