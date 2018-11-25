@@ -6,7 +6,7 @@
 int estruturas[5] = {0,0,0,0,0};
 char *ordem;
 
-
+int listaVazia = 1;
 
 //STRUCT PRINCIPAL
 typedef struct{
@@ -54,6 +54,8 @@ Lista insereL (Lista l, void* val) {
 
     aux.cabec->next = tmp;
 
+    if (listaVazia) listaVazia = 0;
+
     return aux;
 }
 
@@ -62,7 +64,7 @@ Palavra *buscaPalavra (Lista l, long hash) {
   Lista aux = l;
 
   //se tah olhando pra cabeca, tem q olhar pro prox
-  if (aux.cabec->val == NULL && (aux.cabec->next)->val != NULL)
+  if (aux.cabec->val == NULL && aux.cabec->next->val != NULL)
     aux.cabec = aux.cabec->next;
 
 
@@ -175,22 +177,34 @@ void hashVetor(Palavra* vetor, char* palavra, long hash)
 
 void hashLista(Lista lista, char* palavra, long hash)
 {
+    if (listaVazia)
+    {
+        Palavra* novoElemento = malloc(sizeof(Palavra));
+        novoElemento->palavra = palavra;
+        novoElemento->ocorrencias = 1;
+        novoElemento->indice = hash;
+        lista = insereL(lista,novoElemento);
+        listaVazia = 0;
+        return;
+
+    }
     Palavra *resultado = buscaPalavra(lista,hash);
     if (resultado == NULL)
     {
         //Palavra ainda não está na lista
-        Palavra* novoElemento;
+        Palavra* novoElemento = malloc(sizeof(Palavra));
         novoElemento->palavra = palavra;
         novoElemento->ocorrencias = 1;
         novoElemento->indice = hash;
         //Fazer aqui um check no caso de ordenação
-        insereL(lista,novoElemento);
+        lista = insereL(lista,novoElemento);
     }
     else
     {
         //Implementar um check aqui pra ver se há colisões nesse hash
         resultado->ocorrencias += 1;
     }
+    return;
 }
 
 Palavra* processaTexto (FILE* texto, int tamanho) {
@@ -268,12 +282,13 @@ int main(int argc, char **argv) {
 
     Palavra* resultado = processaTexto(texto,tamanho);
 
-    if (estruturas[1])
+    if (estruturas[0]||estruturas[1])
     {
         if (ordem[0] == 65) qsort(resultado, tamanho, sizeof(Palavra), ordenaAlfa);
         if (ordem[0] == 79) qsort(resultado, tamanho, sizeof(Palavra), ordenaNum);
+        imprime(resultado, tamanho);
     }
-    imprime(resultado, tamanho);
+
     int esperar = 1;
 }
 
