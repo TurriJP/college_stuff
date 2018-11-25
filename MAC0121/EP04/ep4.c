@@ -6,13 +6,6 @@
 int estruturas[5] = {0,0,0,0,0};
 char *ordem;
 
-//STRUCT PRINCIPAL
-typedef struct{
-    char* palavra;
-    int ocorrencias;
-    long indice;
-}Palavra;
-
 //STRUCTS LISTA LIGADA
 typedef struct elo {
   struct elo* next;
@@ -22,6 +15,14 @@ typedef struct elo {
 typedef struct {
     Elo* cabec;
 } Lista;
+
+//STRUCT PRINCIPAL
+typedef struct{
+    char* palavra;
+    int ocorrencias;
+    long indice;
+    Lista colisoes;
+}Palavra;
 
 Lista criaL () {
     Lista tmp;
@@ -37,7 +38,7 @@ int fimDaLista (Lista l) {
     return 0;
 }
 
-void* ultimoElemento (Lista l) {
+void *ultimoElemento (Lista l) {
     return l.cabec->val;
 }
 
@@ -55,20 +56,21 @@ Lista insereL (Lista l, void* val) {
 }
 
 
-Palavra* buscaPalavra (Lista l, Palavra *val) {
+Palavra *buscaPalavra (Lista l, long hash) {
   Lista aux = l;
 
   //se tah olhando pra cabeca, tem q olhar pro prox
   if (aux.cabec->val == NULL && (aux.cabec->next)->val != NULL)
     aux.cabec = aux.cabec->next;
 
-/*
+
   while (aux.cabec != NULL) {
-    if (compareElementoAntigo (aux.cabec->val, val) == 1)
+    long palavraB = (aux.cabec)->val->indice;
+    if (comparaHash (aux.cabec->val, hash) == 1)
       return aux.cabec->val;
     aux.cabec = aux.cabec->next;
   }
-*/
+
   return NULL;
 }
 
@@ -170,7 +172,7 @@ void hashVetor(Palavra* vetor, char* palavra, long hash)
 
 void hashLista(Lista lista, char* palavra, long hash)
 {
-    //Algo aqui
+    Palavra *resultado = buscaPalavra(lista,hash);
 }
 
 Palavra* processaTexto (FILE* texto, int tamanho) {
