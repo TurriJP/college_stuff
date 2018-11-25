@@ -2,10 +2,62 @@
 #include <stdlib.h>
 #include <string.h>
 
+//STRUCT PRINCIPAL
 typedef struct{
     char* palavra;
     int ocorrencias;
 }Palavra;
+
+//STRUCTS LISTA LIGADA
+typedef struct elo {
+  struct elo* next;
+  void *val;
+} Elo;
+
+typedef struct {
+    Elo* cabec;
+} Lista;
+
+Lista criaL () {
+    Lista tmp;
+    tmp.cabec = malloc (sizeof (Elo));
+    tmp.cabec->val = NULL;
+    tmp.cabec->next = NULL;
+    return tmp;
+}
+
+int fimDaLista (Lista l) {
+    if (l.cabec->next == NULL)
+        return 1;
+    return 0;
+}
+
+void* ultimoElemento (Lista l) {
+    return l.cabec->val;
+}
+
+Lista insereL (Lista l, void* val) {
+    Lista aux = l;
+    Elo *tmp = malloc (sizeof (Elo));
+    tmp->val = val; tmp->next = NULL;
+
+    while (aux.cabec->next != NULL)
+        aux.cabec = aux.cabec->next;
+
+    aux.cabec->next = tmp;
+
+    return aux;
+}
+
+void* retiraL (Lista ant, Lista atual) {
+    void *aux = atual.cabec->val;
+
+    ant.cabec->next = atual.cabec->next;
+    free (atual.cabec);
+
+    return aux;
+}
+
 
 int ordenaNum (const void * a, const void * b)
 {
@@ -13,7 +65,7 @@ int ordenaNum (const void * a, const void * b)
     Palavra *palavraA = (Palavra *)a;
     Palavra *palavraB = (Palavra *)b;
 
-    return ( palavraB->ocorrencias - palavraA->ocorrencias );
+    return(palavraB->ocorrencias - palavraA->ocorrencias);
 }
 
 int ordenaAlfa (const void * a, const void * b)
@@ -24,7 +76,7 @@ int ordenaAlfa (const void * a, const void * b)
     if (palavraA->palavra == NULL) return 1;
     if (palavraB->palavra == NULL) return -1;
 
-    return strcmp( palavraA->palavra, palavraB->palavra );
+    return strcmp(palavraA->palavra, palavraB->palavra);
 }
 
 void imprime(Palavra* resultado, int tamanho){
