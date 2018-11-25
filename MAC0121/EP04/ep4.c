@@ -125,8 +125,9 @@ void bubbleSort(Elo **head)
         done = 1;
 
         while (nx) {
-            int cmp = strcmp(nd->val->palavra, nx->val->palavra);
-
+            int cmp; 
+            if (ordem[0] == 65) cmp = strcmp(nd->val->palavra, nx->val->palavra); //Alfabética
+            if (ordem[0] == 79) cmp = (nx->val->ocorrencias - nd->val->ocorrencias); 
             if (cmp > 0) {
                 nd->next = nx->next;
                 nx->next = nd;
@@ -321,8 +322,7 @@ int main(int argc, char **argv) {
         Lista* resultado = processaTexto(texto,tamanho);
         if (estruturas[3])
         {
-            if (ordem[0] == 65) {/*alfabético*/}
-            if (ordem[0] == 79) {bubbleSort(resultado);}
+            bubbleSort(resultado);
         }
         imprimeLista(resultado);
     }
