@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+int estruturas[5] = {0,0,0,0,0};
+
 //STRUCT PRINCIPAL
 typedef struct{
     char* palavra;
@@ -50,15 +52,46 @@ Lista insereL (Lista l, void* val) {
     return aux;
 }
 
-void* retiraL (Lista ant, Lista atual) {
-    void *aux = atual.cabec->val;
+/*
+Palavra* buscaPalavra (Lista l, Palavra *val) {
+  Lista aux = l;
 
-    ant.cabec->next = atual.cabec->next;
-    free (atual.cabec);
+  //se tah olhando pra cabeca, tem q olhar pro prox
+  if (aux.cabec->val == NULL && (aux.cabec->next)->val != NULL)
+    aux.cabec = aux.cabec->next;
 
-    return aux;
+  while (aux.cabec != NULL) {
+    if (compareElementoAntigo (aux.cabec->val, val) == 1)
+      return aux.cabec->val;
+    aux.cabec = aux.cabec->next;
+  }
+  return NULL;
 }
 
+void* buscaTS (TabSim t, char *n) {
+  unsigned index = convert (n, t.tam);
+  Lista auxKey = t.tab[index].key;
+  Lista auxVal = t.tab[index].val;
+
+  while (!endList(auxKey)) {
+    auxKey.cabec = auxKey.cabec->next;
+    auxVal.cabec = auxVal.cabec->next;
+    if (strcmp (peek (auxKey), n) != 0)
+      break;
+  }
+
+  return auxVal.cabec->val;
+}
+*/
+
+void avaliaEstrutura(char *estrutura)
+{
+    if (estrutura == "VD") estruturas[0] = 1;
+    if (estrutura == "VO") estruturas[1] = 1;
+    if (estrutura == "LD") estruturas[2] = 1;
+    if (estrutura == "LO") estruturas[3] = 1;
+    if (estrutura == "AB") estruturas[4] = 1;
+}
 
 int ordenaNum (const void * a, const void * b)
 {
@@ -181,12 +214,12 @@ Palavra* processaTexto (FILE* texto, int tamanho) {
 int main(int argc, char **argv) {
     
     int tamanho = 127;
-    FILE* texto = fopen("source.txt", "r");    
-    //FILE* texto = fopen(argv[1], "r");
-    if (texto==NULL)
-    {
-        printf("erro");
-    }
+    FILE* texto = fopen(argv[1], "r");
+    char *estrutura = argv[2];
+    char *ordem = argv[3];
+    avaliaEstrutura(estrutura);
+
+
     Palavra* resultado = processaTexto(texto,tamanho);
     qsort(resultado, tamanho, sizeof(Palavra), ordenaAlfa);
     imprime(resultado, tamanho);
