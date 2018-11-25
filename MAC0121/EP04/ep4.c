@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int estruturas[5] = {0,0,0,0,0};
+ int estruturas[5] = {0,0,0,0,0};
 
 //STRUCT PRINCIPAL
 typedef struct{
@@ -52,7 +52,7 @@ Lista insereL (Lista l, void* val) {
     return aux;
 }
 
-/*
+
 Palavra* buscaPalavra (Lista l, Palavra *val) {
   Lista aux = l;
 
@@ -60,14 +60,17 @@ Palavra* buscaPalavra (Lista l, Palavra *val) {
   if (aux.cabec->val == NULL && (aux.cabec->next)->val != NULL)
     aux.cabec = aux.cabec->next;
 
+/*
   while (aux.cabec != NULL) {
     if (compareElementoAntigo (aux.cabec->val, val) == 1)
       return aux.cabec->val;
     aux.cabec = aux.cabec->next;
   }
+*/
   return NULL;
 }
 
+/*
 void* buscaTS (TabSim t, char *n) {
   unsigned index = convert (n, t.tam);
   Lista auxKey = t.tab[index].key;
@@ -86,11 +89,11 @@ void* buscaTS (TabSim t, char *n) {
 
 void avaliaEstrutura(char *estrutura)
 {
-    if (estrutura == "VD") estruturas[0] = 1;
-    if (estrutura == "VO") estruturas[1] = 1;
-    if (estrutura == "LD") estruturas[2] = 1;
-    if (estrutura == "LO") estruturas[3] = 1;
-    if (estrutura == "AB") estruturas[4] = 1;
+    if (estrutura[0] == 86 && estrutura[1] == 68) estruturas[0] = 1;
+    if (estrutura[0] == 86 && estrutura[1] == 79) estruturas[1] = 1;
+    if (estrutura[0] == 76 && estrutura[1] == 68) estruturas[2] = 1;
+    if (estrutura[0] == 76 && estrutura[1] == 79) estruturas[3] = 1;
+    if (estrutura[0] == 65 && estrutura[1] == 66) estruturas[4] = 1;
 }
 
 int ordenaNum (const void * a, const void * b)
@@ -212,16 +215,28 @@ Palavra* processaTexto (FILE* texto, int tamanho) {
 }
 
 int main(int argc, char **argv) {
-    
+    //int estruturas[5] = {0,0,0,0,0};
     int tamanho = 127;
     FILE* texto = fopen(argv[1], "r");
     char *estrutura = argv[2];
     char *ordem = argv[3];
     avaliaEstrutura(estrutura);
+    /*
+    if (estrutura == "VD") estruturas[0] = 1;
+    if (estrutura[0] == 86) estruturas[1] = 1;
+    if (estrutura == "LD") estruturas[2] = 1;
+    if (estrutura == "LO") estruturas[3] = 1;
+    if (estrutura == "AB") estruturas[4] = 1;
+    */
 
 
     Palavra* resultado = processaTexto(texto,tamanho);
-    qsort(resultado, tamanho, sizeof(Palavra), ordenaAlfa);
+
+    if (estruturas[1])
+    {
+        if (ordem[0] == 65) qsort(resultado, tamanho, sizeof(Palavra), ordenaAlfa);
+        if (ordem[0] == 79) qsort(resultado, tamanho, sizeof(Palavra), ordenaNum);
+    }
     imprime(resultado, tamanho);
     int esperar = 1;
 }

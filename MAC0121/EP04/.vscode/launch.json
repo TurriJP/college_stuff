@@ -11,7 +11,7 @@
             "request": "launch",
             "preLaunchTask": "Build",
             "program": "${workspaceFolder}/compilado.out",
-            "args": ["source.txt"],
+            "args": ["source.txt", "VO", "A"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
