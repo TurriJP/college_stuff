@@ -24,15 +24,18 @@ long espalhador(char* palavra){
 void imprime(Palavra* resultado, int tamanho){
     for (int i = 0; i < tamanho; i++)
     {
-    printf("%s",resultado[i].palavra);
-    printf("%d\n",resultado[i].ocorrencias);
+        if (resultado[i].palavra != NULL)
+        {
+            printf("%s",resultado[i].palavra);
+            printf("%d\n",resultado[i].ocorrencias);
+        }
     }
 }
 
 unsigned espalhador (char* s, int tam) {
    unsigned h = 0;
    for (int i = 0; s[i] != '\0'; i++)
-      h = (h * 256 + s[i]) % tam;
+      h = (h * 2654435769 + s[i]) % tam;
    return h;
 }
 
@@ -44,12 +47,17 @@ int interpreta (char c)
         return 1;
     }
     else if (c<33) return 2;
-    else return 0;
+    else if (c<0) return 3;
+    else
+    {
+
+        return 0;
+    } 
 }
 
 Palavra* vetorDesordenado (FILE* texto, int tamanho) {
     
-    Palavra* vetor = malloc(50 * sizeof(Palavra));
+    Palavra* vetor = malloc(tamanho * sizeof(Palavra));
     char* palavra = malloc(29*sizeof(char)); //29 caracteres é o tamanho da maior palavra não-técnica em português
     char charAtual;
     int estado = 0; //0 = esperando letras, 1 = montando palavra
@@ -58,8 +66,12 @@ Palavra* vetorDesordenado (FILE* texto, int tamanho) {
     while(charAtual != EOF)
     {
         charAtual = fgetc(texto);
+                if (charAtual< 91 && charAtual >64)
+        {
+            charAtual += 32; //converte para lower case
+        }
         int interpretacao = interpreta(charAtual);
-        if (interpretacao != 0) {
+        if (interpretacao == 1 || interpretacao == 2) {
             //PONTUAÇÃO OU WHITESPACE
             if (estado == 1) {
                 //Terminou a palavra que estava sendo lida
@@ -80,6 +92,10 @@ Palavra* vetorDesordenado (FILE* texto, int tamanho) {
                 free(palavra);
             }
         }
+        else if (interpretacao == 3)
+        {
+            //CARACTERE ACENTUADO
+        }
         else{
             //LETRA
             if (estado != 1)
@@ -98,7 +114,7 @@ Palavra* vetorDesordenado (FILE* texto, int tamanho) {
 
 int main(int argc, char **argv) {
     
-    int tamanho = 50;
+    int tamanho = 127;
     FILE* texto = fopen("source.txt", "r");    
     //FILE* texto = fopen(argv[1], "r");
     if (texto==NULL)
