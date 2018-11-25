@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
- int estruturas[5] = {0,0,0,0,0};
+//Globais que armazenam o tipo de estrutura e de ordenação
+int estruturas[5] = {0,0,0,0,0};
+char *ordem;
 
 //STRUCT PRINCIPAL
 typedef struct{
@@ -150,7 +152,7 @@ int interpreta (char c)
     } 
 }
 
-void processaHash(Palavra* vetor, char* palavra, long hash)
+void hashVetor(Palavra* vetor, char* palavra, long hash)
 {
     if (vetor[hash].ocorrencias < 1)
     {
@@ -166,9 +168,21 @@ void processaHash(Palavra* vetor, char* palavra, long hash)
     free(palavra);
 }
 
+void hashLista(Lista lista, char* palavra, long hash)
+{
+    //Algo aqui
+}
+
 Palavra* processaTexto (FILE* texto, int tamanho) {
     
+    //Preciso criar todas as estruturas e dar free nas irrelevantes
+    //O compilador não deixou criar variáveis dentro de um if
     Palavra* vetor = malloc(tamanho * sizeof(Palavra));
+    if (!estruturas[0]&&!estruturas[1]) free(vetor);
+
+    Lista listapalavras = criaL();
+    
+    
     char* palavra = malloc(29*sizeof(char)); //29 caracteres é o tamanho da maior palavra não-técnica em português
     char charAtual;
     int estado = 0; //0 = esperando letras, 1 = montando palavra
@@ -190,7 +204,9 @@ Palavra* processaTexto (FILE* texto, int tamanho) {
                 indiceLetra = 0;
                 long hash;
                 hash = espalhador(palavra,tamanho);
-                processaHash(vetor, palavra, hash);
+                if (estruturas[0]||estruturas[1]) hashVetor(vetor, palavra, hash);
+                if (estruturas[2]||estruturas[3]) hashLista(listapalavras, palavra, hash);
+
 
             }
         }
@@ -215,11 +231,11 @@ Palavra* processaTexto (FILE* texto, int tamanho) {
 }
 
 int main(int argc, char **argv) {
-    //int estruturas[5] = {0,0,0,0,0};
+
     int tamanho = 127;
     FILE* texto = fopen(argv[1], "r");
     char *estrutura = argv[2];
-    char *ordem = argv[3];
+    ordem = argv[3];
     avaliaEstrutura(estrutura);
     /*
     if (estrutura == "VD") estruturas[0] = 1;
