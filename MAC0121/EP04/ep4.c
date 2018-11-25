@@ -124,6 +124,8 @@ int ordenaAlfa (const void * a, const void * b)
     return strcmp(palavraA->palavra, palavraB->palavra);
 }
 
+//FUNÇÕES PARA IMPRIMIR O RESULTADO
+
 void imprime(Palavra* resultado, int tamanho){
     for (int i = 0; i < tamanho; i++)
     {
@@ -133,6 +135,21 @@ void imprime(Palavra* resultado, int tamanho){
             printf("%d\n",resultado[i].ocorrencias);
         }
     }
+}
+
+void imprimeLista(Lista* resultado)
+{
+  if (resultado->cabec->val == NULL && resultado->cabec->next->val != NULL)
+    resultado->cabec = resultado->cabec->next;
+
+
+  while (resultado->cabec != NULL) {
+    printf("%s ",resultado->cabec->val->palavra);
+    printf("%d\n",resultado->cabec->val->ocorrencias);
+    resultado->cabec = resultado->cabec->next;
+  }
+
+  return;
 }
 
 unsigned espalhador (char* s, int tam) {
@@ -207,7 +224,7 @@ void hashLista(Lista lista, char* palavra, long hash)
     return;
 }
 
-Palavra* processaTexto (FILE* texto, int tamanho) {
+void* processaTexto (FILE* texto, int tamanho) {
     
     //Preciso criar todas as estruturas e dar free nas irrelevantes
     //O compilador não deixou criar variáveis dentro de um if
@@ -271,24 +288,22 @@ int main(int argc, char **argv) {
     char *estrutura = argv[2];
     ordem = argv[3];
     avaliaEstrutura(estrutura);
-    /*
-    if (estrutura == "VD") estruturas[0] = 1;
-    if (estrutura[0] == 86) estruturas[1] = 1;
-    if (estrutura == "LD") estruturas[2] = 1;
-    if (estrutura == "LO") estruturas[3] = 1;
-    if (estrutura == "AB") estruturas[4] = 1;
-    */
-
-
-    Palavra* resultado = processaTexto(texto,tamanho);
 
     if (estruturas[0]||estruturas[1])
     {
+        Palavra* resultado = processaTexto(texto,tamanho);
         if (ordem[0] == 65) qsort(resultado, tamanho, sizeof(Palavra), ordenaAlfa);
         if (ordem[0] == 79) qsort(resultado, tamanho, sizeof(Palavra), ordenaNum);
         imprime(resultado, tamanho);
     }
 
+    if (estruturas[2]||estruturas[3])
+    {
+        Lista* resultado = processaTexto(texto,tamanho);
+        imprimeLista(resultado);
+    }
+
     int esperar = 1;
+    return 0;
 }
 
