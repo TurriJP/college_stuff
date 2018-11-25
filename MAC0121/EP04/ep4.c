@@ -6,6 +6,7 @@
 typedef struct{
     char* palavra;
     int ocorrencias;
+    long indice;
 }Palavra;
 
 //STRUCTS LISTA LIGADA
@@ -113,7 +114,23 @@ int interpreta (char c)
     } 
 }
 
-Palavra* vetorDesordenado (FILE* texto, int tamanho) {
+void processaHash(Palavra* vetor, char* palavra, long hash)
+{
+    if (vetor[hash].ocorrencias < 1)
+    {
+        vetor[hash].palavra = malloc(strlen(palavra)*sizeof(char));
+        strcpy(vetor[hash].palavra,palavra);
+        vetor[hash].ocorrencias = 1;
+        vetor[hash].indice = hash;
+    }
+    else 
+    {
+    vetor[hash].ocorrencias += 1;
+    }
+    free(palavra);
+}
+
+Palavra* processaTexto (FILE* texto, int tamanho) {
     
     Palavra* vetor = malloc(tamanho * sizeof(Palavra));
     char* palavra = malloc(29*sizeof(char)); //29 caracteres é o tamanho da maior palavra não-técnica em português
@@ -137,17 +154,8 @@ Palavra* vetorDesordenado (FILE* texto, int tamanho) {
                 indiceLetra = 0;
                 long hash;
                 hash = espalhador(palavra,tamanho);
-                if (vetor[hash].ocorrencias < 1)
-                {
-                    vetor[hash].palavra = malloc(strlen(palavra)*sizeof(char));
-                    strcpy(vetor[hash].palavra,palavra);
-                    vetor[hash].ocorrencias = 1;
-                }
-                else 
-                {
-                vetor[hash].ocorrencias += 1;
-                }
-                free(palavra);
+                processaHash(vetor, palavra, hash);
+
             }
         }
         else if (interpretacao == 3)
@@ -179,7 +187,7 @@ int main(int argc, char **argv) {
     {
         printf("erro");
     }
-    Palavra* resultado = vetorDesordenado(texto,tamanho);
+    Palavra* resultado = processaTexto(texto,tamanho);
     qsort(resultado, tamanho, sizeof(Palavra), ordenaAlfa);
     imprime(resultado, tamanho);
     int esperar = 1;
