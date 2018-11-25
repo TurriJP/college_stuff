@@ -47,7 +47,8 @@ void *ultimoElemento (Lista l) {
 Lista insereL (Lista l, void* val) {
     Lista aux = l;
     Elo *tmp = malloc (sizeof (Elo));
-    tmp->val = val; tmp->next = NULL;
+    tmp->val = val; 
+    tmp->next = NULL;
 
     while (aux.cabec->next != NULL)
         aux.cabec = aux.cabec->next;
@@ -78,23 +79,6 @@ Palavra *buscaPalavra (Lista l, long hash) {
   return NULL;
 }
 
-/*
-void* buscaTS (TabSim t, char *n) {
-  unsigned index = convert (n, t.tam);
-  Lista auxKey = t.tab[index].key;
-  Lista auxVal = t.tab[index].val;
-
-  while (!endList(auxKey)) {
-    auxKey.cabec = auxKey.cabec->next;
-    auxVal.cabec = auxVal.cabec->next;
-    if (strcmp (peek (auxKey), n) != 0)
-      break;
-  }
-
-  return auxVal.cabec->val;
-}
-*/
-
 void avaliaEstrutura(char *estrutura)
 {
     if (estrutura[0] == 86 && estrutura[1] == 68) estruturas[0] = 1;
@@ -122,6 +106,39 @@ int ordenaAlfa (const void * a, const void * b)
     if (palavraB->palavra == NULL) return -1;
 
     return strcmp(palavraA->palavra, palavraB->palavra);
+}
+
+//ORDENAÇÃO PARA LISTA LIGADA
+
+void bubbleSort(Elo **head) 
+{
+    int done = 0;         // 1 quando nenhuma troca foi feita numa passagem
+
+    // Não organizar uma lista vazia ou com um único elemento
+    if (*head == NULL || (*head)->next == NULL) return;
+
+    while (!done) {
+        Elo **pv = head;            // fonte do ponteiro para o nó atual na lista
+        Elo *nd = *head;            // ponteiro de iteração local
+        Elo *nx = (*head)->next;    // ponteiro com o próximo ponteiro
+
+        done = 1;
+
+        while (nx) {
+            int cmp = strcmp(nd->val->palavra, nx->val->palavra);
+
+            if (cmp > 0) {
+                nd->next = nx->next;
+                nx->next = nd;
+                *pv = nx;
+
+                done = 0;
+            }
+            pv = &nd->next;
+            nd = nx;
+            nx = nx->next;
+        }
+    }
 }
 
 //FUNÇÕES PARA IMPRIMIR O RESULTADO
@@ -201,7 +218,6 @@ void hashLista(Lista lista, char* palavra, long hash)
         novoElemento->ocorrencias = 1;
         novoElemento->indice = hash;
         lista = insereL(lista,novoElemento);
-        listaVazia = 0;
         return;
 
     }
@@ -292,18 +308,25 @@ int main(int argc, char **argv) {
     if (estruturas[0]||estruturas[1])
     {
         Palavra* resultado = processaTexto(texto,tamanho);
-        if (ordem[0] == 65) qsort(resultado, tamanho, sizeof(Palavra), ordenaAlfa);
-        if (ordem[0] == 79) qsort(resultado, tamanho, sizeof(Palavra), ordenaNum);
+        if (estruturas[1])
+        {
+            if (ordem[0] == 65) qsort(resultado, tamanho, sizeof(Palavra), ordenaAlfa);
+            if (ordem[0] == 79) qsort(resultado, tamanho, sizeof(Palavra), ordenaNum);
+        }
         imprime(resultado, tamanho);
     }
 
     if (estruturas[2]||estruturas[3])
     {
         Lista* resultado = processaTexto(texto,tamanho);
+        if (estruturas[3])
+        {
+            if (ordem[0] == 65) {/*alfabético*/}
+            if (ordem[0] == 79) {bubbleSort(resultado);}
+        }
         imprimeLista(resultado);
     }
 
-    int esperar = 1;
     return 0;
 }
 
