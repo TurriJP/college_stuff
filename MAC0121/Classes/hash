@@ -1,0 +1,37 @@
+HASHING
+Uma tabela de símbolos é uma estrutura de dados que implementa as operações de inserção e busca
+
+               | BUSCA | INSERÇÃO
+vetor          | O(n)  | O(1)
+vetor ordenado |O(logn)| O(n)
+lista ligada   | O(n)  | O(1)
+l.l. ordenada  | O(n)  | O(1)
+ABB            | O(h)  | O(h)   h=altura
+Hashing        | O(1)  | O(1)
+
+Uma tabela de hashing(espalhamento) é uma tabela em que os elementos que serão armazenados serão divididos
+
+Para representar n coisas, precisa de uma tabela com tamanho parecido a n
+Precisa criar uma função que pegue cada elemento e associe a uma posição na tabela
+Se houver colisão, coloca uma lista ligada na posição
+
+Divisão é uma má função de hash 
+h(x) = x % n
+É fácil para o adversário gerar um conjunto de dados ruim para a função
+
+Ideia(Knuth): multiplicação
+h(x) = floor(m*frac(Ax))
+
+Funções de hashing que garantem um bom espalhamento (a probabilidade de colisão é pequena) são difíceis
+de obter. Uma forma de obter isso é o chamado hashing universal(mais disso em MAC338)
+
+Duas aplicações:
+
+1)Bucketsort
+Este método pode ser usado para ordenar em tempo linear números desde que saibamos que eles estão
+num intervalo n, [a,b)
+
+2)Radixsort
+Na primeira passada, ordena os números pelo último dígito; na segunda, ordena pelo penúltimo; e assim por diante
+Cada passada tem complexidade Theta(n), portanto em tempo Theta(d*n) o vetor é ordenado onde d é o número máximo de dígitos dos números
+que queremos ordenar
