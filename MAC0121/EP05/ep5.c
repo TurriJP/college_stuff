@@ -3,6 +3,12 @@
 #include <string.h>
 #include "batalha-final-ep5-master/robot_fight.h"
 
+/*
+ALUNOS
+Erica Cope - NUSP 9299091
+João Pedro Turri - NUSP 6805993 
+*/
+
 int quickTurn(int ini, int end) {
 	int i, j;
 	for(i = ini, j = 0; i != end; i = (i+1)%6, j++)
@@ -98,9 +104,11 @@ Action processTurn(Grid *grid, Position pos, int turnsLeft){
     }
     */
 	
+    /*
 	if(grid->map[pos.x][pos.y].isControlPoint)
         //Robô está diretamente no control point
 		return STAND;
+    */
 
     int isValid = 0; //Verificar se uma dada posição está vazia
     if ((pos.x >= 0 && pos.x < m && pos.y >= 0 && pos.y < n) && (grid->map[pos.x][pos.y].type == NONE)) isValid = 1;
@@ -133,32 +141,36 @@ Action processTurn(Grid *grid, Position pos, int turnsLeft){
         }
     }
 
-    int control_dir = searchNearestControl(grid, pos, r);
-    /*Caso em nenhuma direcao tem um control point livre
-    andar em uma direcao valida, ou comeca a virar para uma direcao valida*/
-    if (control_dir == -1) {
-        int i,j;
-        for(i = r->dir, j = 0; j < 6; i++,j++){
-            if (i >= 6) i-=6;
-            Position s = getNeighbor(pos,i);
-            if(valid(s, grid->m, grid->n, grid)) {
-                if(i == r->dir) {
-                    return WALK;
-                }
-                else {
-                    return fastTurn(r->dir, i);
+    //Checar balas nas diagonais
+
+    if(!(grid->map[pos.x][pos.y].isControlPoint)){
+        int control_dir = searchNearestControl(grid, pos, r);
+        /*Caso em nenhuma direcao tem um control point livre
+        andar em uma direcao valida, ou comeca a virar para uma direcao valida*/
+        if (control_dir == -1) {
+            int i,j;
+            for(i = r->dir, j = 0; j < 6; i++,j++){
+                if (i >= 6) i-=6;
+                Position s = getNeighbor(pos,i);
+                if(valid(s, grid->m, grid->n, grid)) {
+                    if(i == r->dir) {
+                        return WALK;
+                    }
+                    else {
+                        return fastTurn(r->dir, i);
+                    }
                 }
             }
+            /*Se nenhuma posicao em volta eh valida, SAD TIME*/
+            return STAND;
         }
-        /*Se nenhuma posicao em volta eh valida, SAD TIME*/
-        return STAND;
-    }
-    /*Se encontrou um control point em alguma direcao,
-        comeca a virar e andar em sua direcao*/
-    else if(control_dir == r->dir)
-        return WALK;
-    else {
-        return fastTurn(r->dir, control_dir);
+        /*Se encontrou um control point em alguma direcao,
+            comeca a virar e andar em sua direcao*/
+        else if(control_dir == r->dir)
+            return WALK;
+        else {
+            return fastTurn(r->dir, control_dir);
+        }
     }
 
     return STAND;
