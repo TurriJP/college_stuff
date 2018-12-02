@@ -66,68 +66,7 @@ int searchNearestControl(Grid *g, Position p, Robot *r) {
 }
 
 
-/*
-int valid(Position p, int m, int n) {
-	return (p.x >= 0 && p.x < m && p.y >= 0 && p.y < n);
-}
-*/
-
-
-
 //NOSSAS FUNÇÕES
-
-//Se tem alguem nos 3 tiles da frente, bala neles
-Action processaTiro(Grid *g, Position pos, Direction dir){
-    for (int i = -1; i<2; i++){
-        Position tileAdjacente = getNeighbor(pos,dir+i);
-        if (valid(tileAdjacente,g->m,g->n,g)){
-            if ((g->map[tileAdjacente.x][tileAdjacente.y].type) == ROBOT){
-                if(i==-1) return SHOOT_LEFT;
-                else if(i==0) return SHOOT_CENTER;
-                else if(i==1) return SHOOT_RIGHT;
-            }
-        }
-
-    }
-    return STAND; //Não atirar nesse turno
-}
-
-Action emergencia(Grid *g, Robot *r, Position pos, Direction roboDir, Direction balaDir, int distancia){
-    int direcaoBala; //Avalia se a bala vem por trás ou pela frente
-    if(balaDir== roboDir) direcaoBala = 1; // LOGO ATRÁS
-    if(balaDir==(roboDir+1)%6) direcaoBala = 2; //ATRÁS ESQUERDA    
-    if(balaDir==(roboDir+2)%6) direcaoBala = 3; // FRENTE ESQUERDA    
-    if(balaDir==(roboDir+3)%6) direcaoBala = 4; // LOGO EM FRENTE
-    if(balaDir==(roboDir+4)%6) direcaoBala = 5; // FRENTE DIREITA
-    if(balaDir==(roboDir+5)%6) direcaoBala = 6; // ATRÁS DIREITA
-
-
-    if (distancia==0){
-        //Emergência máxima. Única salvação é andar imediatamente
-        Position tileAdjacente = getNeighbor(pos,roboDir);
-        if (valid(tileAdjacente,g->m,g->n,g) && roboDir!=(balaDir+3)%6) return WALK; //fazer mais um check pra ver se esse tile não receberá tiros
-    }  
-
-    //Atirar ou colocar barreira
-    if(direcaoBala == 1 && r->obstacles > 0) return OBSTACLE_CENTER;
-    if(direcaoBala == 2 && r->obstacles > 0) return OBSTACLE_LEFT;
-    if(direcaoBala == 3 && r->bullets > 0) return SHOOT_LEFT;
-    if(direcaoBala == 4 && r->bullets > 0) return SHOOT_CENTER;
-    if(direcaoBala == 5 && r->bullets > 0) return SHOOT_RIGHT;
-    if(direcaoBala == 6 && r->obstacles > 0) return OBSTACLE_RIGHT;
-
-    //Se nada deu certo, vamos tentar girar
-    for(int i = 1;i<6;i++){
-        Position fuga = getNeighbor(pos,roboDir+i);
-        if (valid(fuga,g->m,g->n,g) && (roboDir+i)!=(balaDir+3)%6) return fastTurn(roboDir,roboDir+1);
-    }
-
-    //Pra garantir que não dê merda
-    return STAND;
-    
-
-    
-}
 
 Action emergenciaReescrita(Grid *g, Robot *r, Position pos, int i, int j, int dirBala){
     // i = de onde vem a bala; 0 = logo em frente, 1 = direita, ..., 5 = esquerda
@@ -135,7 +74,7 @@ Action emergenciaReescrita(Grid *g, Robot *r, Position pos, int i, int j, int di
     if (j==0){
         //Emergência máxima. Única salvação é andar imediatamente
         Position tileAdjacente = getNeighbor(pos,r->dir);
-        if (valid(tileAdjacente,g->m,g->n,g)) return WALK; //fazer mais um check pra ver se esse tile não receberá tiros
+        if (valid(tileAdjacente,g->m,g->n,g)) return WALK; //fazer mais um check pra ver se esse tile não receberá tiros?
     }
     //Atirar ou colocar barreira
     if(i==0 && r->bullets > 0) return SHOOT_CENTER;
@@ -153,36 +92,16 @@ Action emergenciaReescrita(Grid *g, Robot *r, Position pos, int i, int j, int di
 
     //Pra garantir que exista uma ação válida caso nem o giro dê certo
     return STAND;
-
-
-
-
 }
 
 void prepareGame(Grid *grid, Position pos, int turnCount){
     init = 0;
     setName("Godot");
-
 }
 
 Action processTurn(Grid *grid, Position pos, int turnsLeft){
+
     Robot *r = &grid->map[pos.x][pos.y].object.robot;
-
-    //int m = grid->m;
-    //int n = grid->n;
-
-   /*
-   if(!init){
-       init = 1;
-       return OBSTACLE_CENTER;
-   }
-    */
-
-    /*
-    int isValid = 0; //Verificar se uma dada posição está vazia
-    if ((pos.x >= 0 && pos.x < m && pos.y >= 0 && pos.y < n) && (grid->map[pos.x][pos.y].type == NONE)) isValid = 1;
-    */
-
     static int neighbors[2][6][2] = {                          
 		{{-1, 0}, {-1, -1}, {0, -1}, {1, 0}, {0, 1}, {-1, 1}}, //Linha par        A partir da esquerda, em
 		{{-1, 0}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}}    //Linha ímpar      sentido horário
@@ -196,28 +115,9 @@ Action processTurn(Grid *grid, Position pos, int turnsLeft){
             + j*(neighbors[(pos.y+1) % 2][(r->dir+i)%6][0]), 
             pos.y + neighbors[pos.y % 2][(r->dir+i)%6][1] 
             + j*(neighbors[(pos.y+1) % 2][(r->dir+i)%6][1])};
-            //Tile vizinho = grid->map[tileAdjacente.x][tileAdjacente.y];
 
             if (tileAdjacente.x >= 0 && tileAdjacente.x < grid->m && tileAdjacente.y >= 0 && tileAdjacente.y < grid->n){
-                if (grid->map[tileAdjacente.x][tileAdjacente.y].type == NONE){
-                    //TILE VAZIO
-                }
-                if (grid->map[tileAdjacente.x][tileAdjacente.y].type == BLOCK){
-                    //BLOCO
-                }
-                if (grid->map[tileAdjacente.x][tileAdjacente.y].type == ROBOT){
-                    //ROBÔ INIMIGO
-                    //Action tiro = processaTiro(grid, pos,r->dir);
-                    //if (tiro != STAND && r->bullets>0) return tiro;
-                    if(r->bullets>0){
-                        if(i==0) return SHOOT_CENTER;
-                        if(i==5) return SHOOT_LEFT;
-                        if(i==1) return SHOOT_RIGHT;
-                        if(i==2) return TURN_RIGHT;
-                        if(i==3||i==4) return TURN_LEFT;
 
-                    }
-                }
                 if (grid->map[tileAdjacente.x][tileAdjacente.y].type == PROJECTILE){
                     //TIRO
                     Position linhaDeTiro = 
@@ -234,22 +134,27 @@ Action processTurn(Grid *grid, Position pos, int turnsLeft){
                         int dirBala = grid->map[tileAdjacente.x][tileAdjacente.y].object.projectile.dir;
                         //if((dirBala+3)%6 == dirAbsoluta) 
                         emergenciaReescrita(grid, r, pos, i, j, dirBala);
-                        //emergencia(grid, r, pos, r->dir,grid->map[tileAdjacente.x][tileAdjacente.y].object.projectile.dir,j);
+                    }
+                }
+
+                if (grid->map[tileAdjacente.x][tileAdjacente.y].type == ROBOT){
+                    //ROBÔ INIMIGO
+
+                    if(r->bullets>0 && j==0){
+                        if(i==0) return SHOOT_CENTER;
+                        if(i==5) return SHOOT_LEFT;
+                        if(i==1) return SHOOT_RIGHT;
+                        if(i==2) return TURN_RIGHT;
+                        if(i==3||i==4) return TURN_LEFT;
                     }
                 }
             }
-
-
-
         }
     }
 
-    //Checar balas nas diagonais
-
+    //Se não está em perigo, tentar colonizar um control point
     if(!(grid->map[pos.x][pos.y].isControlPoint)){
         int control_dir = searchNearestControl(grid, pos, r);
-        /*Caso em nenhuma direcao tem um control point livre
-        andar em uma direcao valida, ou comeca a virar para uma direcao valida*/
         if (control_dir == -1) {
             int i,j;
             for(i = r->dir, j = 0; j < 6; i++,j++){
@@ -264,16 +169,16 @@ Action processTurn(Grid *grid, Position pos, int turnsLeft){
                     }
                 }
             }
-            /*Se nenhuma posicao em volta eh valida, SAD TIME*/
             return STAND;
         }
-        /*Se encontrou um control point em alguma direcao,
-            comeca a virar e andar em sua direcao*/
         else if(control_dir == r->dir)
             return WALK;
         else {
             return fastTurn(r->dir, control_dir);
         }
+    }
+    else{
+        //Estou de boas no control point. Vou tentar atirar ou colocar uma barreira
     }
 
     //Se não achou nenhuma opção de ação, apenas fique parado
